@@ -1,0 +1,39 @@
+# ─── Claude Code sensitive files ────────────────────────────────────────────
+# These live in ~/.claude/ globally, but if you ever symlink or copy them here:
+.credentials.json          # OAuth access + refresh tokens — CRITICAL
+history.jsonl              # Full chat history (may contain secrets from past sessions)
+stats-cache.json           # Usage statistics / session IDs
+todos.json                 # Personal todo list
+file-history/              # Per-file edit history
+session-env/               # Session environment snapshots
+
+# Claude Code project-level local files (per Claude Code convention)
+# Files matching *.local.md and *.local.json in .claude/ are user-specific
+.claude/*.local.md
+.claude/*.local.json
+.claude/settings.local.json  # Local overrides (MCP servers, personal prefs)
+
+# ─── Environment & secrets ───────────────────────────────────────────────────
+.env
+.env.*
+!.env.example              # Safe to commit — no real secrets, just template
+
+# ─── OS / Editor ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Python (if relevant) ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+venv/
+env/
+.pytest_cache/
+.coverage
+
+# ─── Node (if relevant) ─────────────────────────────────────────────────────
+node_modules/
+.npm
