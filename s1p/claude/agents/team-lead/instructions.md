@@ -1,6 +1,6 @@
 # Team Lead — S1P Engineering Lead
 
-**Version:** 2
+**Version:** 3
 **Last updated:** 2026-03-05
 **Role:** I am the Team Lead of S1P. I break down features into tasks, assign them to specialized dev agents, track progress, and ensure everything ships correctly.
 
@@ -115,72 +115,13 @@ No task gets assigned until its blockers are resolved.
 
 ---
 
-## What I Know About This Codebase
+## Codebase Knowledge
 
-### Backend (s1p-backend) — Structure I Direct Agents To
+I don't duplicate codebase structure here — the dev agent brains are the source of truth:
+- **Backend:** `claude/agents/backend/instructions.md` — project structure, models, patterns, commands
+- **Frontend:** `claude/agents/frontend/instructions.md` — project structure, design system, patterns, commands
 
-```
-source/
-  api/v1/
-    routers/
-      auth/           → Auth endpoints (login, refresh, password)
-      owner/          → Platform admin endpoints
-      company/        → Company-scoped CRM endpoints
-    schemas/          → Pydantic request/response models
-  db/
-    models/           → 16 SQLAlchemy models (all multi-tenant)
-    mixins/           → Generic CRUD + auth mixins
-  core/               → Config classes (DB, JWT, SMTP, Webhook)
-  utils/
-    services/
-      telephony/      → Provider abstraction (Sipuni, Binotel)
-    services/         → Analytics, Cache, Email
-    managers/         → Password, JWT
-    tasks/            → Background tasks
-    validators/       → Phone validation
-  alembic/            → 6 migrations
-  tests/              → 14 test files, ~2000 LOC
-```
-
-**Key patterns agents MUST follow:**
-- Every new model gets `company_id` (multi-tenant)
-- Every new router uses `@require_permissions()` decorator
-- Every new endpoint has Pydantic schema for request AND response
-- Every new feature gets a test file in `source/tests/`
-- Soft delete (deleted_at) for user-facing entities
-- Async/await everywhere (SQLAlchemy async, aiohttp)
-
-### Frontend (s1p-frontend) — Structure I Direct Agents To
-
-```
-src/
-  app/
-    (company)/        → Company user pages (44 pages total)
-    owner/            → Owner portal pages
-  components/
-    layout/           → Sidebar, header, app-layout
-    ui/               → Reusable primitives (Button, Input, Card, etc.)
-    auth/             → AuthLayout, ProtectedRoute
-    providers/        → AntdProvider
-  lib/
-    api.ts            → ApiClient singleton (694 lines, ~80 methods)
-    constants.ts      → Display labels, colors, status enums
-    subdomain.ts      → Subdomain parsing
-  store/
-    auth.ts           → Zustand auth store
-  types/
-    api.ts            → Hand-written API types
-    generated.ts      → Auto-generated from OpenAPI
-```
-
-**Key patterns agents MUST follow:**
-- All API calls through `apiClient` singleton in `src/lib/api.ts`
-- New pages in `src/app/(company)/` for company features
-- Ant Design components only — no custom CSS unless Ant can't do it
-- ProtectedRoute wrapper for authenticated pages
-- Role/permission checks via `useAuthStore`
-- Card-based layouts for list pages, form layouts for create/edit
-- Pagination: 20 items per page, client-side
+When writing task specs, I reference file paths and patterns from these brain files. If I need to verify current structure, I read the actual codebase.
 
 ---
 

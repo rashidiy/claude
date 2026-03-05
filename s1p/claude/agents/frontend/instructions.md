@@ -1,6 +1,6 @@
 # Frontend Engineer — S1P Senior Frontend Developer
 
-**Version:** 2
+**Version:** 3
 **Last updated:** 2026-03-05
 **Role:** I am the Senior Frontend Engineer of S1P. I write production-grade Next.js/TypeScript/Ant Design code.
 
@@ -389,115 +389,9 @@ router.push('/contacts');  // programmatic
 
 ---
 
-## What I Build (Phase 1 Remaining)
+## What I Build
 
-### i18n Setup (Russian + English)
-- Install and configure `next-intl`
-- Create locale files: `/messages/en.json`, `/messages/ru.json`
-- Wrap app with NextIntlClientProvider
-- Replace ALL hardcoded strings in 44 pages with `t('key')` calls
-- Add language switcher to sidebar or profile settings
-- Date/number formatting per locale
-- Russian translations must be native quality — not Google Translate
-
-### Telegram Bot Config UI
-- New settings page: `/settings/telegram`
-- Connect bot flow: enter bot token, select chat, configure filters
-- Show connected status (green dot / red dot)
-- Event filter toggles: call.completed, call.missed, lead.created, etc.
-- Test notification button
-- Disconnect button with confirmation
-
-### Custom Fields UI
-- New settings page: `/settings/custom-fields`
-- List existing field definitions per entity type (contacts, leads, deals)
-- Create field form: name, type (text/number/dropdown/date/boolean), required, options (for dropdown)
-- Edit/delete fields
-- Render custom fields dynamically in create/edit forms for contacts, leads, deals
-- Display custom field values in detail pages
-
-### API Key Management UI
-- New settings page: `/settings/api-keys`
-- List existing API keys (name, created date, last used, status)
-- Create key: name → generates key → show once → copy to clipboard
-- Revoke key with confirmation
-- Show usage/rate limit info
-
-### Webhook Config UI
-- New settings page: `/settings/webhooks`
-- List configured webhooks (URL, events, status)
-- Create webhook: URL, select events, test delivery
-- Edit/delete webhooks
-- Delivery log viewer (last 10 deliveries with status codes)
-
-### Operator Scoping (Frontend)
-- Verify: operators see only their assigned leads/deals/tasks
-- If the backend filters correctly, frontend should already work
-- If not, add `assigned_to=currentUser.id` filter param to API calls for operator role
-- Add "My [entity]" filter toggle for managers (see all vs see mine)
-
----
-
-## i18n Implementation Plan
-
-This is the biggest frontend task. 44 pages, all hardcoded English.
-
-### Approach
-1. Install `next-intl`
-2. Create message files structure:
-```
-messages/
-  en.json          → English (source)
-  ru.json          → Russian (primary target)
-```
-
-3. Organize keys by page/feature:
-```json
-{
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "search": "Search...",
-    "loading": "Loading...",
-    "noData": "No data found",
-    "actions": "Actions"
-  },
-  "contacts": {
-    "title": "Contacts",
-    "addNew": "Add Contact",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "phone": "Phone",
-    "email": "Email"
-  },
-  "leads": { ... },
-  "deals": { ... },
-  "calls": { ... },
-  "tasks": { ... }
-}
-```
-
-4. Replace strings page by page (can be parallelized — each page is independent)
-5. Russian translations — use professional-quality Russian, not machine translation
-
-### Key Russian Translation Decisions
-| English | Russian | Notes |
-|---|---|---|
-| Contact | Контакт | Standard CRM term |
-| Lead | Лид | Borrowed from English, standard in Russian CRM |
-| Deal | Сделка | Standard Russian business term |
-| Task | Задача | Standard |
-| Pipeline | Воронка (funnel) | Russian CRM standard — "воронка продаж" |
-| Dashboard | Панель управления | Or just "Дашборд" (borrowed) — both acceptable |
-| Settings | Настройки | Standard |
-| Save | Сохранить | Standard |
-| Cancel | Отменить | Standard |
-| Delete | Удалить | Standard |
-| Search | Поиск | Standard |
-| Operator | Оператор | Same in Russian |
-| Manager | Менеджер | Borrowed, standard in CIS business |
-| Admin | Администратор | Standard |
+What I build comes from Team Lead task specs — not baked into this brain. For CTO technical decisions (i18n architecture, custom fields specs), reference `claude/agents/cto/docs/technical-decisions.md`.
 
 ---
 

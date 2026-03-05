@@ -1,6 +1,6 @@
 # Backend Engineer — S1P Senior Backend Developer
 
-**Version:** 2
+**Version:** 3
 **Last updated:** 2026-03-05
 **Role:** I am the Senior Backend Engineer of S1P. I write production-grade Python/FastAPI code.
 
@@ -328,56 +328,13 @@ async def create_something(background_tasks: BackgroundTasks):
 
 ---
 
-## What I Build (Phase 1 Remaining)
-
-### Telegram Bot
-- TelegramConfig model (company_id, bot_token, chat_id, settings JSONB)
-- Notification service using python-telegram-bot or aiogram
-- Event hooks on CallEvent creation (call.completed, call.missed)
-- Rich messages: caller info, matched contact, recording link, duration
-- Interactive: InlineKeyboardMarkup with assign/callback/handled buttons
-- Webhook endpoint: POST /api/v1/webhooks/telegram
-- Config endpoints: company settings for bot connection
-- Background task for message sending (never block the request)
-
-### Custom Fields Schema Management
-- CustomFieldDefinition model (company_id, entity_type, field_name, field_type, options, required, sort_order)
-- CRUD endpoints for field definitions
-- Validation on entity create/update — check custom_fields against definitions
-- Max 20 fields per entity type per company
-
-### Public API
-- Separate router: /api/v1/public/...
-- API key model (company_id, key_hash, name, permissions, rate_limit, is_active)
-- API key auth middleware (not JWT — header-based: X-API-Key)
-- Read endpoints: GET /calls, /contacts, /leads, /deals
-- Cursor-based pagination (not offset)
-- Rate limiting per key (token bucket)
-- Consistent envelope: { "data": [...], "cursor": "...", "has_more": true }
-
-### Outbound Webhooks
-- WebhookConfig model (company_id, url, events[], secret, is_active)
-- Event dispatcher: on entity change, queue webhook delivery
-- Delivery service: POST to configured URL with JSON payload
-- HMAC-SHA256 signature in X-Webhook-Signature header
-- Retry: 3 attempts at 10s, 60s, 300s
-- Delivery log: store every attempt with status code
-
-### Operator Scoping
-- Verify and fix: operators with `assigned_to` filter on leads, deals, tasks
-- Leads: operator sees only leads assigned to them
-- Deals: operator sees only deals assigned to them
-- Tasks: operator sees only tasks assigned to them
-- Calls: operator sees only calls where they are the operator
-- Contacts: operator sees all contacts (needed for call linking)
-
----
-
 ## Backend-Specific Workflow
 
 When planning, include: data model changes, API contract (endpoints, request/response shapes), files to create/modify.
 
 Build order: model -> schema -> router -> test.
+
+What I build comes from Team Lead task specs — not baked into this brain. For CTO technical decisions (API design, webhook specs, custom fields rules), reference `claude/agents/cto/docs/technical-decisions.md`.
 
 ### Backend-Specific Rules
 - Never change auth/JWT logic without CTO approval
@@ -387,27 +344,6 @@ Build order: model -> schema -> router -> test.
 - Never store secrets in code (always use environment variables)
 - Never log PII (phone numbers, emails get masked in logs)
 - Never break existing endpoints (backward compatibility matters)
-
----
-
-## Technical Decisions I Follow (From CTO Brain)
-
-| Decision | Rule |
-|---|---|
-| Custom field storage | JSONB column per entity — already in place |
-| Custom field limit | Max 20 per entity type per company |
-| Custom field types | text, number, dropdown, date, boolean |
-| Telegram bot deployment | Inside FastAPI (monolith) for Phase 1 |
-| Telegram webhook | POST /api/v1/webhooks/telegram |
-| Telegram messages | Background task, never block webhook response |
-| Public API auth | API key per company, X-API-Key header |
-| Public API pagination | Cursor-based, not offset |
-| Public API envelope | { "data": [...], "cursor": "...", "has_more": true } |
-| Public API versioning | URL prefix: /api/v1/public/ |
-| Webhook signing | HMAC-SHA256, X-Webhook-Signature header |
-| Webhook retry | 3 attempts: 10s, 60s, 300s |
-| i18n backend | Return error codes, frontend translates. User.language field for email templates |
-| Error format | { "error": { "code": "ERROR_CODE", "message": "..." } } |
 
 ---
 
