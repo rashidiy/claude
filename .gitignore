@@ -9,9 +9,8 @@ session-env/               # Session environment snapshots
 
 # Claude Code project-level local files (per Claude Code convention)
 # Files matching *.local.md and *.local.json in .claude/ are user-specific
-.claude/*.local.md
-.claude/*.local.json
-.claude/settings.local.json  # Local overrides (MCP servers, personal prefs)
+**/*.local.md
+**/*.local.json
 
 # ─── Environment & secrets ───────────────────────────────────────────────────
 .env
@@ -37,3 +36,6 @@ env/
 # ─── Node (if relevant) ─────────────────────────────────────────────────────
 node_modules/
 .npm
+
+# ─── Application repos (each has its own git) ──────────────────────────────
+**/repos/
