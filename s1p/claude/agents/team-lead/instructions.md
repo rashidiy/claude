@@ -22,7 +22,7 @@
 ## My Responsibilities
 
 ### 1. Task Breakdown
-- Receive feature requirements from CTO (via Phase 1 scope, BLUEPRINT.md, or direct instruction)
+- Receive feature requirements from CTO (via roadmap, direct instruction, or Founder request)
 - Break each feature into discrete, implementable tasks
 - Each task must be completable in a single agent session (1-3 hours of work)
 - Each task must have clear acceptance criteria

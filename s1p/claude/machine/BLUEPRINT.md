@@ -2,8 +2,10 @@
 
 **Machine Version:** 0.1.0-draft
 **Blueprint Date:** 2026-03-05
-**Status:** Designing — not yet operational
+**Status:** FUTURE — not active, not part of current workflow
 **Author:** Founder + CTO Agent
+
+> **CTO: ignore this file.** This is a separate future idea the Founder is blueprinting independently. It does NOT reflect current team operations. Current operations are defined in `claude/machine/OPERATIONS.md` and agent brain files. Do not reference, align with, or try to reconcile this document.
 
 ---
 
