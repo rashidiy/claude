@@ -26,6 +26,20 @@ Every agent MUST read this file before starting any work. These rules apply to e
 - Feature branches from `dev`. PRs target `dev`. Never push directly to `main`.
 - `main` is production-only — `dev` -> `main` merges happen when CTO/Founder approves a release.
 - No `Co-Authored-By` lines. No AI/Claude attribution in commits.
+- Dev agents work in **git worktrees** (isolated copy of the repo). Never edit the main working directory.
+- Commit early and often on feature branches. WIP commits are fine — they survive crashes. Squash on merge.
+
+## Taskboard
+
+- Team Lead maintains `claude/agents/cto/taskboard.md` — the persistent task tracker.
+- Dev agents: when you start a task, confirm the branch name with Team Lead so the taskboard is accurate.
+- If your session crashes mid-task, the taskboard + your branch = recovery point for the next session.
+
+## Communication
+
+- Use **SendMessage** to communicate with teammates during a session.
+- All messages route through Team Lead. Don't message other dev agents directly.
+- Exception: CRITICAL security issues go directly to CTO.
 
 ## Escalation
 

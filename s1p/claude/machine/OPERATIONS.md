@@ -1,7 +1,7 @@
 # S1P Machine — Operations Guide
 
-**Version:** 1
-**Last updated:** 2026-03-05
+**Version:** 2
+**Last updated:** 2026-03-06
 
 How to run the dev team. Read this on every session start.
 
@@ -176,9 +176,29 @@ Agent question
 
 ## Communication Protocol
 
-### Agent → CTO Messages
-Must include:
-- **What** they need (decision, approval, clarification)
+### How Agents Talk: SendMessage (Claude Code Teams)
+
+All live communication uses **SendMessage** — the native Claude Code Teams tool. Agents are teammates in a shared team created by CTO at session start.
+
+**Message flows:**
+```
+CTO → Team Lead:       Feature scope, plan approval/rejection
+Team Lead → Backend:    Task spec, clarification, feedback relay from QA
+Team Lead → Frontend:   Task spec, API contract from backend, feedback relay
+Team Lead → QA:         Review request (task spec + files changed)
+Backend → Team Lead:    "Done", "blocked on X", technical question
+Frontend → Team Lead:   "Done", "blocked on X", technical question
+QA → Team Lead:         PASS/FAIL verdict
+Team Lead → CTO:        Status update, escalation, decision needed
+Any agent → CTO:        CRITICAL security issue (bypasses Team Lead)
+```
+
+**No direct agent-to-agent.** Backend never messages Frontend directly. Everything routes through Team Lead. This prevents chaos and keeps Team Lead aware of all state.
+
+### Message Format
+
+Every message must include:
+- **What** they need (decision, approval, clarification, status update)
 - **Context** (what they're working on, what they tried)
 - **Options** (if applicable, with pros/cons)
 - **Recommendation** (what they think is best)
@@ -203,10 +223,63 @@ Must include:
 When starting a new session after a break:
 
 1. CTO reads: `claude/agents/cto/instructions.md` + `claude/agents/cto/decisions-cache.md`
-2. CTO checks: `claude/machine/BLUEPRINT.md` for current state
-3. CTO reads: task list (if team was running) for progress
+2. CTO reads: `claude/agents/cto/taskboard.md` — what was in progress?
+3. CTO cross-references with git branches: `git branch` in `repos/s1p-backend/` and `repos/s1p-frontend/`
+   - Taskboard says "in-progress" but branch is merged → mark done
+   - Taskboard says "in-progress" and branch exists with changes → resume
+   - Orphan branches not in taskboard → investigate before deleting
 4. Agents read: their brain + their lessons.md
 5. Continue from where we left off
+
+---
+
+## Conflict Resolution — Simultaneous File Edits
+
+### Rule 1: Git Worktrees (Isolation by Default)
+Dev agents work in **isolated git worktrees** (`isolation: "worktree"` on the Agent tool). They never share a working directory. Each agent gets its own copy of the repo, branches from `dev`, and merges via PR.
+
+### Rule 2: Team Lead Avoids Overlap (Soft Rule)
+When assigning parallel tasks, Team Lead checks `FILES LIKELY TOUCHED` in each task spec. If two tasks touch the same files, they run sequentially — not in parallel.
+
+### Rule 3: Conflicts at PR Time (Git Handles It)
+If two agents modify the same file despite precautions, git catches the conflict at merge time. The second PR to merge must rebase and resolve. This is normal git workflow — not a failure.
+
+### What This Means in Practice
+- Backend and Frontend agents can always work in parallel (different repos)
+- Two Backend tasks that touch different files can run in parallel
+- Two Backend tasks that touch the same router file → sequential
+- Team Lead makes this call at assignment time, not mid-task
+
+---
+
+## Error Recovery — Agent Crashes
+
+### The Taskboard
+`claude/agents/cto/taskboard.md` is the persistent state tracker. Team Lead updates it:
+- When a task is **created** → add row with `backlog` status
+- When a task is **assigned** → update to `in-progress`, note the branch name
+- When a task is **submitted for review** → update to `in-review`
+- When a task is **done** → move to Completed table
+- When a task is **blocked** → update status, note the blocker
+
+### Recovery Protocol (Session Dies Mid-Task)
+1. New session starts → CTO reads `taskboard.md`
+2. For each `in-progress` task:
+   - Check if the branch exists: `git branch` in the relevant repo
+   - Check the branch state: `git log dev..branch-name --oneline`
+   - If branch has commits but no PR → agent was mid-implementation, resume
+   - If PR exists → check if QA reviewed, continue from there
+   - If no branch exists → agent hadn't started, reassign
+3. For each `in-review` task:
+   - Check PR status on GitHub: `gh pr status`
+   - If QA passed → merge and mark done
+   - If QA failed → relay feedback, agent fixes
+4. Update taskboard to reflect current reality
+
+### What Survives a Crash
+- **Always survives:** taskboard file, git branches, PRs, committed code
+- **Lost:** uncommitted changes in the crashed agent's working directory
+- **Mitigable:** agents should commit early and often (WIP commits are fine on feature branches)
 
 ---
 

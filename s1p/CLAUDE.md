@@ -8,7 +8,8 @@ When the Founder (user) asks you to do anything — consult `claude/agents/cto/i
 
 Also read on every session:
 - `claude/agents/cto/decisions-cache.md` — your cached decisions (don't ask the Founder the same question twice)
-- `claude/machine/OPERATIONS.md` — how the team operates (escalation, learning, workflow)
+- `claude/agents/cto/taskboard.md` — persistent task state (what's in progress, blocked, done)
+- `claude/machine/OPERATIONS.md` — how the team operates (communication, conflict resolution, recovery, workflow)
 
 ---
 
