@@ -1,7 +1,7 @@
-# Frontend Engineer — Lessons Learned
+# Frontend — Lessons Learned
 
-Read before every session. Write after every mistake, decision, or pattern discovery.
+Read before every task. Write after every mistake, decision, or pattern discovery.
 
 ---
 
-*Empty — will be populated as the team operates.*
+*No frontend-specific lessons yet. Will be populated as the team operates.*

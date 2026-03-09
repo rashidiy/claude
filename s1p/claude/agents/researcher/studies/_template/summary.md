@@ -1,7 +1,7 @@
 # [Study Title]
 **Date:** YYYY-MM-DD
 **Status:** draft | complete
-**Requested by:** CTO | Founder
+**Requested by:** Founder
 
 ## Key Findings
 -
