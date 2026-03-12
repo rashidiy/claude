@@ -19,3 +19,7 @@ Past decisions. Read before every session. If it's been decided here, don't re-a
 | 2026-03-08 | Structured logging? | **Skip.** Basic Python logging fine for Phase 1. | |
 | 2026-03-08 | Real-time features (WebSocket/SSE)? | **Later.** Telegram bot handles operator notifications for now. | |
 | 2026-03-08 | Payment/billing integration? | **Later.** Manual contracts fine for Phase 1. | |
+| 2026-03-12 | Company user auth method? | **Telegram OTP only.** Email+password removed for company users. Owner keeps email+password. | Deep link registration, prefill from TG profile |
+| 2026-03-12 | telegram_user_id uniqueness? | **Per-company** (not global). One TG account can be in multiple companies. | UniqueConstraint('company_id', 'telegram_user_id') |
+| 2026-03-12 | Registration flow? | **Deep link** via `/start inv_{TOKEN_ID_HEX}`. No more `/register` bot command. | Bot captures TG profile + avatar, creates challenge |
+| 2026-03-12 | Owner admin invite? | **InviteToken flow** (same as company invite). No email+temp password. | Returns deep_link + copyable message |

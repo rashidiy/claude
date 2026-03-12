@@ -15,6 +15,7 @@ _No active tasks._
 
 | ID | Task | Completed | Branch |
 |---|---|---|---|
+| T43 | Telegram Auth Overhaul (backend + frontend) | 2026-03-12 | feature/telegram-auth-overhaul + feature/telegram-auth-frontend |
 | T42 | Frontend Production-Ready Overhaul | 2026-03-12 | dev (direct) |
 | T34 | Fix deals.py data.stage AttributeError | 2026-03-08 | verified done |
 | T35 | Fix custom fields enum case mismatch | 2026-03-08 | verified done |
