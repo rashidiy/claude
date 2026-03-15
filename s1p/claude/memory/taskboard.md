@@ -8,13 +8,36 @@ Persistent task state. Survives session crashes. Update on every status change.
 
 | ID | Task | Status | Repo | Blocked By | Notes |
 |---|---|---|---|---|---|
-
-_No active tasks._
+| T60-T74 | Telegram Bot V2 | done | backend+frontend | none | Merged to dev. Backend: 5 commits, Frontend: 1 commit. Smoke test passed. |
 
 ## Completed (Last 15)
 
 | ID | Task | Completed | Branch |
 |---|---|---|---|
+| T53 | Landing page — dark theme, Magic UI, Unbounded font | 2026-03-15 | feat/landing-page |
+| T60 | Extend TelegramBotConfig model + migration | 2026-03-15 | feature/telegram-bot-v2 |
+| T61 | Pyrogram dependency + config | 2026-03-15 | feature/telegram-bot-v2 |
+| T62 | Pyrogram userbot service | 2026-03-15 | feature/telegram-bot-v2 |
+| T63 | Group setup endpoints + topic creation | 2026-03-15 | feature/telegram-bot-v2 |
+| T64 | Frontend setup wizard UI | 2026-03-15 | feature/telegram-bot-v2 |
+| T65 | i18n notification templates | 2026-03-15 | feature/telegram-bot-v2 |
+| T66 | TelegramService refactor (topics + i18n) | 2026-03-15 | feature/telegram-bot-v2 |
+| T67 | Recording signed URLs + dual-auth endpoint | 2026-03-15 | feature/telegram-bot-v2 |
+| T68 | Interactive callback handlers | 2026-03-15 | feature/telegram-bot-v2 |
+| T69 | Bot commands (/today, /search, /myleads) | 2026-03-15 | feature/telegram-bot-v2 |
+| T70 | Daily digest scheduler | 2026-03-15 | feature/telegram-bot-v2 |
+| T71 | Smart grouping (Redis dedup) | 2026-03-15 | feature/telegram-bot-v2 |
+| T72 | DM notification prefs + sending | 2026-03-15 | feature/telegram-bot-v2 |
+| T73 | DM preferences frontend (in T64) | 2026-03-15 | feature/telegram-bot-v2 |
+| T74 | Mini App auth endpoint | 2026-03-15 | feature/telegram-bot-v2 |
+| T52 | Webhooks settings page | 2026-03-15 | feat/api-keys-page |
+| T51 | API Keys settings page | 2026-03-15 | feat/api-keys-page |
+| T50 | Custom Fields settings page | 2026-03-15 | feat/api-keys-page |
+| T49 | Frontend shared file prep (types, API, i18n, sidebar, settings hub) | 2026-03-15 | dev (direct) |
+| T48 | Public API cursor pagination | 2026-03-15 | feat/public-api-cursor-pagination |
+| T47 | Contacts operator scoping + Admin invite email | 2026-03-15 | feat/admin-invite-email |
+| T46 | Telegram cleanup: consolidate services, remove dead webhook, fix schemas | 2026-03-14 | fix/telegram-cleanup |
+| T45 | Fix Telegram reg_ webhook handler + User avatar system | 2026-03-13 | main (direct) |
 | T43 | Telegram Auth Overhaul (backend + frontend) | 2026-03-12 | feature/telegram-auth-overhaul + feature/telegram-auth-frontend |
 | T42 | Frontend Production-Ready Overhaul | 2026-03-12 | dev (direct) |
 | T34 | Fix deals.py data.stage AttributeError | 2026-03-08 | verified done |

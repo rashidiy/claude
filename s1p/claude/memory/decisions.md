@@ -23,3 +23,9 @@ Past decisions. Read before every session. If it's been decided here, don't re-a
 | 2026-03-12 | telegram_user_id uniqueness? | **Per-company** (not global). One TG account can be in multiple companies. | UniqueConstraint('company_id', 'telegram_user_id') |
 | 2026-03-12 | Registration flow? | **Deep link** via `/start inv_{TOKEN_ID_HEX}`. No more `/register` bot command. | Bot captures TG profile + avatar, creates challenge |
 | 2026-03-12 | Owner admin invite? | **InviteToken flow** (same as company invite). No email+temp password. | Returns deep_link + copyable message |
+| 2026-03-15 | Telegram V2 userbot library? | **Pyrogram** (async, MTProto). Inside monolith, single dedicated account. | FloodWait handling, asyncio.Lock serialization |
+| 2026-03-15 | Telegram V2 group structure? | **5 forum topics**: Calls, Missed, Leads, Deals, General. Automated via Pyrogram, manual fallback. | Topic names localized per company language |
+| 2026-03-15 | Telegram V2 recording delivery? | **Signed URL** (HMAC-SHA256, 24h expiry) + JWT cookie fallback. No file upload/storage. | Dual-auth: signed token for Telegram, JWT for CRM |
+| 2026-03-15 | Telegram V2 callback data format? | **Shortened prefixes** (mh/al/cb/cc) to fit 64-byte limit. | Legacy prefixes preserved for backward compat |
+| 2026-03-15 | Telegram V2 smart grouping? | **Redis-based**, 30min window, edit existing message with (x{count}). | Redis down → graceful fallback (always send new) |
+| 2026-03-15 | Telegram V2 Mini App auth? | **initData HMAC validation → JWT**. Maps telegram_user_id to CRM user. | Foundation only, Mini App frontend is separate work |

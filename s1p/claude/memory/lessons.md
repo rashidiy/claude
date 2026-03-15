@@ -40,6 +40,28 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 **What happened:** Spawned 3 agents to wire 22 pages with useTranslations. By adding all 629 keys to JSON files FIRST (in one commit), agents only touched .tsx files — zero merge conflicts on shared JSON files.
 **Lesson:** For parallel i18n work, add all translation keys to the shared JSON files in advance. Agents should never modify message files.
 
+## Never Overwrite User Files From Git History
+
+**Source:** Illustration fix (2026-03-13)
+**What happened:** User spent hours manually fixing 14 illustration PNGs (extracting, removing backgrounds, cleaning edges). Agent restored "originals" from an old git commit, overwrote all uncommitted work. Hours of manual work permanently lost — binary files can't be recovered from git.
+**Lesson:** Before touching ANY user file:
+1. Check `git status` — uncommitted changes ARE the user's work
+2. Never write directly to source files. Always process in `.tmp/`, show the user, copy only after confirmation
+3. If you need "originals", backup the CURRENT on-disk files first — not git history versions
+4. Binary files (images) can't be recovered if overwritten — extra caution required
+
+## Landing Pages Need Premium Component Libraries, Not Hand-Written Tailwind
+
+**Source:** Landing page rebuild (2026-03-15)
+**What happened:** First 2 attempts (hand-written Tailwind components) scored 4-5/10. Looked like generic AI-generated templates. Switching to dark theme + Magic UI components (Particles, ShimmerButton, NumberTicker, BorderBeam, BlurFade, Marquee) + custom fonts (Unbounded + Manrope with Cyrillic) jumped quality to 7.5/10.
+**Lesson:** For marketing/landing pages:
+1. Never use Inter font — use distinctive display fonts with Cyrillic support (Unbounded, Geologica)
+2. Use Magic UI / Aceternity UI copy-paste components instead of hand-writing
+3. Dark themes with strategic light/color spills look dramatically more premium than white backgrounds
+4. CIS CRM competitors (Bitrix24, Kommo) all use white/light — dark theme is an instant differentiator
+5. Magic UI only needs `clsx` + `tailwind-merge` — no shadcn init required, works alongside Ant Design
+6. Change framer-motion imports in Magic UI source from `motion/react` to `framer-motion` for compatibility
+
 ## Soft Delete Needs Full-Stack Thinking
 
 **Source:** Pre-prod audit (2026-03-08)
