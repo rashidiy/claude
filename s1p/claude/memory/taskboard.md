@@ -8,12 +8,17 @@ Persistent task state. Survives session crashes. Update on every status change.
 
 | ID | Task | Status | Repo | Blocked By | Notes |
 |---|---|---|---|---|---|
-| T60-T74 | Telegram Bot V2 | done | backend+frontend | none | Merged to dev. Backend: 5 commits, Frontend: 1 commit. Smoke test passed. |
+| — | No active tasks | — | — | — | — |
 
 ## Completed (Last 15)
 
 | ID | Task | Completed | Branch |
 |---|---|---|---|
+| T77 | QA audit fix — backend: cross-tenant leaks (contacts calls_subquery, contact activity, dashboard, auto-link), unbounded queries (outcomes summary, pipeline summary), defense-in-depth filters | 2026-03-17 | fix/qa-audit-findings → dev |
+| T78 | QA audit fix — frontend: i18n constants (10 label maps → key maps, 6 option arrays), outcome options, ProtectedRoute on 4 admin settings pages, "answered" i18n key | 2026-03-17 | fix/qa-audit-findings → dev |
+| T75 | Production hardening — backend (Dockerfile, multi-tenant fix, JWT validation, lifespan, Redis warnings, docker-compose.prod) | 2026-03-17 | dev (direct, 8 commits) |
+| T76 | Production hardening — frontend (build fix, dead code removal, docker env fix, CSP fix, nginx fix, deps audit) | 2026-03-17 | dev (direct, 7 commits) |
+| T60-T74 | Telegram Bot V2 | 2026-03-15 | feature/telegram-bot-v2 |
 | T53 | Landing page — dark theme, Magic UI, Unbounded font | 2026-03-15 | feat/landing-page |
 | T60 | Extend TelegramBotConfig model + migration | 2026-03-15 | feature/telegram-bot-v2 |
 | T61 | Pyrogram dependency + config | 2026-03-15 | feature/telegram-bot-v2 |
