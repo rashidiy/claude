@@ -13,6 +13,8 @@ Persistent task state. Survives session crashes. Update on every status change.
 ## Completed (Last 15)
 
 | ID | Task | Completed | Branch |
+| T79 | QA audit fix — backend: test isolation, PII masking, SSRF hardening, race condition fix, operator enumeration, UUID validation, webhook secrets, bulk contact dedup, stale tests cleanup | 2026-03-18 | dev (direct) |
+| T80 | QA audit fix — frontend: remove sample analytics data, 59 console.error calls, toast consistency, i18n fixes, type safety, duplicate constants | 2026-03-18 | dev (direct) |
 |---|---|---|---|
 | T77 | QA audit fix — backend: cross-tenant leaks (contacts calls_subquery, contact activity, dashboard, auto-link), unbounded queries (outcomes summary, pipeline summary), defense-in-depth filters | 2026-03-17 | fix/qa-audit-findings → dev |
 | T78 | QA audit fix — frontend: i18n constants (10 label maps → key maps, 6 option arrays), outcome options, ProtectedRoute on 4 admin settings pages, "answered" i18n key | 2026-03-17 | fix/qa-audit-findings → dev |
