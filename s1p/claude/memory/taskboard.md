@@ -8,7 +8,7 @@ Persistent task state. Survives session crashes. Update on every status change.
 
 | ID | Task | Status | Repo | Blocked By | Notes |
 |---|---|---|---|---|---|
-| — | No active tasks | — | — | — | — |
+| T81 | Sipuni one-click setup — contract + backend (client, model, migration, router) + frontend (types, api, page, i18n) | doing | both | none | All code written, needs commit + QA |
 
 ## Completed (Last 15)
 

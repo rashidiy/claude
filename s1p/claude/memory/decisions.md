@@ -29,3 +29,5 @@ Past decisions. Read before every session. If it's been decided here, don't re-a
 | 2026-03-15 | Telegram V2 callback data format? | **Shortened prefixes** (mh/al/cb/cc) to fit 64-byte limit. | Legacy prefixes preserved for backward compat |
 | 2026-03-15 | Telegram V2 smart grouping? | **Redis-based**, 30min window, edit existing message with (x{count}). | Redis down → graceful fallback (always send new) |
 | 2026-03-15 | Telegram V2 Mini App auth? | **initData HMAC validation → JWT**. Maps telegram_user_id to CRM user. | Foundation only, Mini App frontend is separate work |
+| 2026-03-18 | Sipuni setup architecture? | **SipuniAsyncClient in-process** (httpx, no Playwright/sidecar). Password used once, never stored. Background task for setup. | Same UX pattern as Telegram one-click |
+| 2026-03-18 | Sipuni setup model? | **SipuniSetupConfig** — separate from Company.provider_config. Tracks setup_status + method + services_enabled. | provider_config stores credentials, this tracks setup state |
