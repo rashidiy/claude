@@ -87,6 +87,23 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 **What happened:** `constants.ts` had 10 label maps (`LEAD_STATUS_LABELS`, `CALL_STATUS_LABELS`, etc.) with hardcoded English. They were used directly in JSX without translation.
 **Lesson:** Pattern established: rename `*_LABELS` → `*_KEYS`, store i18n key paths (`statuses.new`, `directions.inbound`), resolve with `tFields(KEY)` at render time. Options arrays use `{ value, key }` instead of `{ value, label }`.
 
+## CSP Blocks Telegram Mini App SDK Injection
+
+**Source:** Mini App launch failure (2026-03-22)
+**What happened:** Mini App showed "Not authenticated" because `window.Telegram.WebApp` was undefined. Root cause: `X-Frame-Options: DENY` and `script-src` without `https://telegram.org` blocked Telegram's SDK injection. Also `frame-ancestors 'none'` prevented the WebView.
+**Lesson:** Telegram Mini App routes need relaxed CSP:
+1. No `X-Frame-Options` header
+2. `script-src` must include `https://telegram.org`
+3. `frame-ancestors` must allow `https://web.telegram.org https://*.telegram.org`
+4. Use separate Next.js `headers()` rules for `/miniapp` vs other routes
+5. Next.js `/:path*` catch-all overrides specific rules — use negative lookahead `/((?!miniapp).*)`
+
+## Next.js Middleware Blocks Routes on Bare Domain
+
+**Source:** Mini App showing landing page (2026-03-22)
+**What happened:** Middleware redirected all non-landing routes on bare domain (`s1p.uz`) to `/`. Mini App at `/miniapp` was redirected to the landing page.
+**Lesson:** When adding new public routes that should work on the bare domain, add them to the middleware whitelist alongside `/login`, `/register`, etc.
+
 ## Soft Delete Needs Full-Stack Thinking
 
 **Source:** Pre-prod audit (2026-03-08)

@@ -110,7 +110,7 @@ JWT + `settings.read`
   "is_connected": true,
   "cabinet_id": "018315",
   "security_key_masked": "0.w56***",
-  "webhook_url": "https://api.example.com/api/v1/webhooks/sipuni/abc123",
+  "webhook_url": "https://api.example.com/api/v1/company/webhooks/abc123",
   "setup_status": "ready",
   "setup_method": "auto",
   "services_enabled": { "stream": true, "callback": true }
@@ -179,6 +179,6 @@ When `setup_status === "setting_up"`:
 - Only one setup can run at a time (409 if already setting_up)
 - Password is passed in-memory to background task, never stored in DB/logs/files
 - `provider_type` must be `sipuni` — reject for binotel companies
-- Webhook URL format: `{API_BASE}/api/v1/webhooks/sipuni/{company.webhook_token}`
+- Webhook URL format: `{API_BASE}/api/v1/company/webhooks/{company.webhook_token}`
 - Does NOT remove webhooks from Sipuni on disconnect (would need password again)
 - Manual setup skips Sipuni dashboard entirely — just stores credentials
