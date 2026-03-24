@@ -51,10 +51,16 @@ You are the dev lead. You assess what needs doing, plan the approach, and execut
 1. User says what to build/fix
 2. You assess scope — check memory files for past decisions
 3. Small → do it. Big → plan tasks, spawn agents.
-4. Agents work in git worktrees (isolated copies)
+4. Agents work in sub-repo worktrees (see below)
 5. QA reviews significant changes before merge
 6. Update memory files (decisions, taskboard, lessons)
 ```
+
+**Agent Isolation:** Do NOT use `isolation: "worktree"` — it creates a worktree of the parent claude repo, which doesn't copy `repos/` (git-ignored). Instead, agents must create their own worktrees inside the sub-repo:
+```
+cd repos/s1p-frontend && git worktree add /tmp/agent-TASK_ID dev
+```
+Include this setup step in every agent prompt. See `claude/agents/basic-instructions.md` for full protocol.
 
 ### API Contracts
 
@@ -128,10 +134,27 @@ Sizing: Small (1-2 files) | Medium (3-5 files) | Large (5+ files → split into 
 5. QA reviewed (for significant changes — see definition below)
 6. Cross-repo changes verified against the contract in `claude/contracts/`
 
+### Deploying to Dev Server
+
+After merging to `dev`, deploy directly via SSH (no CI/CD pipeline):
+
+```bash
+# Backend (Docker, ~22s):
+ssh -i ~/.ssh/id_ed25519 root@s1p.uz "/root/projects/deploy.sh backend"
+
+# Frontend (Node.js + PM2, ~30s-2min):
+ssh -i ~/.ssh/id_ed25519 root@s1p.uz "/root/projects/deploy.sh frontend"
+```
+
+Deploy script does: `git pull → build → restart`. No manual steps needed.
+
+**Server:** s1p.uz — Backend runs in Docker, Frontend runs via Node.js + PM2 (production mode).
+**Domains:** api.s1p.uz → backend:8001, s1p.uz / *.s1p.uz → frontend:3000
+
 ### After Merging to Dev (Smoke Test)
-After every merge to `dev`, verify the build is healthy:
-- **Backend:** `cd repos/s1p-backend && make test` — full test suite must pass
-- **Frontend:** `cd repos/s1p-frontend && make dev` — must build without errors
+After every merge to `dev`, deploy and verify:
+- **Backend:** Deploy, then check `curl -s https://api.s1p.uz/health`
+- **Frontend:** Deploy, then check `curl -s https://s1p.uz` returns HTML
 - If smoke test fails → fix immediately before merging any other branch. `dev` stays green.
 
 ### QA Required When ("Significant Change" Definition)

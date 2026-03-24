@@ -32,8 +32,6 @@ Persistent task state. Survives session crashes. Update on every status change.
 | T52 | Webhooks settings page | 2026-03-15 | feat/api-keys-page |
 | T51 | API Keys settings page | 2026-03-15 | feat/api-keys-page |
 | T50 | Custom Fields settings page | 2026-03-15 | feat/api-keys-page |
-| T49 | Frontend shared file prep | 2026-03-15 | dev (direct) |
-| T48 | Public API cursor pagination | 2026-03-15 | feat/public-api-cursor-pagination |
 
 ---
 

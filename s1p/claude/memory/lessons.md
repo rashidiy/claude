@@ -122,3 +122,24 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 **Source:** Pre-prod audit (2026-03-08)
 **What happened:** Soft-deleted contacts left orphaned leads/deals with no indication in UI.
 **Lesson:** When adding soft delete: list query filters, related entity display ("deleted" labels), cascade behavior.
+
+## Webhook Event 1 Races With Call Endpoints
+
+**Source:** Sipuni events 1-4 support (2026-03-19)
+**What happened:** Added handling for Sipuni event 1 (call start). When user clicks "Call", Sipuni fires event 1 webhook faster than the API response returns. The webhook handler created the CallEvent row first, then the call endpoint tried to create the same row → 409 Conflict "Resource already exists".
+**Lesson:** When adding new webhook event handlers:
+1. Check ALL code paths that create CallEvent rows — not just the webhook handler
+2. Call endpoints (`/calls/sipuni/external`, `/number`, `/tree`) must use upsert logic (check existing before insert)
+3. Always test the real call flow after changes, not just unit tests — race conditions only manifest in async production flows
+4. Before running `alembic upgrade head` on a running DB, verify new code paths don't break existing functionality
+
+## Worktree Isolation Does NOT Isolate Sub-Repos
+
+**Source:** T86/T88/T89 parallel agents (2026-03-24)
+**What happened:** Launched 3 agents with `isolation: "worktree"` expecting each to work in isolated copies. But worktrees are created from the **claude repo** (`/home/rashidiy/claude/`), and `repos/` is git-ignored. The worktree doesn't contain copies of `s1p-frontend` or `s1p-backend`. When agents `cd repos/s1p-frontend`, they hit the **original shared repo**. T89 checked out its feature branch in the user's main frontend directory, overwriting their work. Bug fixes applied to the main repo got overwritten by agent operations on the same files.
+**Lesson:** For this project structure (parent repo + git-ignored sub-repos):
+1. `isolation: "worktree"` only isolates the parent claude repo files — NOT the application repos
+2. For true isolation, agents must create worktrees **inside** each sub-repo: `cd repos/s1p-frontend && git worktree add ...`
+3. Never let agents `git checkout` branches in the main working directory — they must work in their own worktree path
+4. If agents can't be truly isolated, run them **sequentially** instead of in parallel, or at minimum ensure they never touch files the user is actively editing
+5. Always verify the user's working directory branch hasn't changed after agent work completes

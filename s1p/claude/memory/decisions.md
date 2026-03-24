@@ -31,3 +31,8 @@ Past decisions. Read before every session. If it's been decided here, don't re-a
 | 2026-03-15 | Telegram V2 Mini App auth? | **initData HMAC validation → JWT**. Maps telegram_user_id to CRM user. | Foundation only, Mini App frontend is separate work |
 | 2026-03-18 | Sipuni setup architecture? | **SipuniAsyncClient in-process** (httpx, no Playwright/sidecar). Password used once, never stored. Background task for setup. | Same UX pattern as Telegram one-click |
 | 2026-03-18 | Sipuni setup model? | **SipuniSetupConfig** — separate from Company.provider_config. Tracks setup_status + method + services_enabled. | provider_config stores credentials, this tracks setup state |
+| 2026-03-19 | Sipuni webhook events scope? | **All 4 events** (1=start, 2=hangup, 3=answer, 4=transfer) via HTTP webhook. No WebSocket in Phase 1. | Single row per call, updated by each event. Terminal state protection prevents out-of-order overwrites. |
+| 2026-03-19 | Sipuni event notifications? | Event 2 → Telegram + outbound webhook. Events 1,4 → outbound webhook only. Event 3 → no notifications. | Telegram on every event would be too noisy. |
+| 2026-03-19 | SIP extension uniqueness? | **No unique constraint** — multiple users can share one extension. | Phase 1 decision. |
+| 2026-03-19 | Operator call popup behavior? | **Auto-fill for operators** (disabled dropdown), **dropdown for admins/managers** from Sipuni operators API. | Operators always use their assigned extension. |
+| 2026-03-19 | Webhook phone overwrite? | **Skip phone_1/phone_2 in webhook update** if existing record already has values. | Prevents SIP extension (201) overwriting real phone numbers set by call endpoint. |
