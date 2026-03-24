@@ -123,6 +123,35 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 **What happened:** Soft-deleted contacts left orphaned leads/deals with no indication in UI.
 **Lesson:** When adding soft delete: list query filters, related entity display ("deleted" labels), cascade behavior.
 
+## Migrations Must Not Flag Old Data for Background Tasks
+
+**Source:** Escalation spam on Logistic group creation (2026-03-24)
+**What happened:** Migration set `needs_callback = true` on all existing inbound missed calls. When the Telegram group was created, the escalation scheduler found 30+ old calls and tried to send messages for all of them at once → Telegram flood control, spam in group.
+**Lesson:**
+1. Never retroactively flag old data for time-sensitive background tasks (escalation, notifications)
+2. Only new records going forward should trigger background tasks
+3. If you must backfill, add a `created_at` check in the task to skip old records
+
+## Startapp Params Must Be Handled End-to-End
+
+**Source:** Mini App validation error from Telegram callback buttons (2026-03-24)
+**What happened:** Backend generated signed base64 startapp params for Mini App buttons. But Mini App frontend still expected raw company_id in `start_param`. Clicking any button showed validation error. Also, dialer read `number` param but startapp sent `dial`.
+**Lesson:**
+1. When changing a parameter format (raw → encoded), update BOTH producer (backend) and consumer (frontend)
+2. Test the full flow: button in Telegram → Mini App opens → correct page with prefilled data
+3. Keep backward compatibility — decode new format but still accept old raw format
+
+## Never Manually Assign Auto-Increment PKs — Use the Sequence
+
+**Source:** Logistic company 500 errors (2026-03-24)
+**What happened:** `next_call_number()` computed `MAX(id) WHERE company_id = X` to assign "company-scoped" IDs, but `id` is a **global** primary key. Company A had ids 1-9; company B's first call tried id=1 → PK collision. Additionally, FOR UPDATE on an empty result set (new company) locks nothing, so concurrent webhooks both got id=1.
+**Lesson:**
+1. Never manually assign values to auto-increment PK columns — let PostgreSQL's sequence handle it
+2. If you need company-scoped numbering, use a separate column, not the PK
+3. `FOR UPDATE` on an empty result set is a no-op — it cannot prevent concurrent inserts
+4. When catching IntegrityError in async SQLAlchemy, always `session.rollback()` first, and cache all ORM scalar values beforehand (objects expire after rollback → MissingGreenlet)
+5. After fixing manual-id code, reset the sequence: `SELECT setval('seq', (SELECT MAX(id) FROM table))`
+
 ## Webhook Event 1 Races With Call Endpoints
 
 **Source:** Sipuni events 1-4 support (2026-03-19)
@@ -143,3 +172,86 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 3. Never let agents `git checkout` branches in the main working directory — they must work in their own worktree path
 4. If agents can't be truly isolated, run them **sequentially** instead of in parallel, or at minimum ensure they never touch files the user is actively editing
 5. Always verify the user's working directory branch hasn't changed after agent work completes
+
+## Mirror Back Before Implementing — Don't Assume Understanding
+
+**Source:** Mini App dialer redesign (2026-03-24)
+**What happened:** User described what they wanted for the dialer. I implemented immediately without confirming my understanding. Got it wrong 5+ times in a row — wrong layout, wrong interaction model, wrong tap targets. User got increasingly frustrated. Each failed iteration wasted a build+deploy cycle (2 min each).
+**Lesson:**
+1. ALWAYS write back what you understood in plain language and get explicit "yes" before writing code
+2. Draw ASCII layouts or describe the exact interaction model
+3. If the user describes multiple changes, confirm each one separately
+4. One failed implementation = acceptable. Three in a row = you're not listening
+
+## Verify Deployments Actually Work — Don't Trust the Script
+
+**Source:** Mini App dialer spam fix, CSS broken deploy (2026-03-24)
+**What happened:** Deploy script said "deployed" but changes weren't live. Root causes: (1) `next build` silently OOM-killed — PM2 restarted with old `.next/` dir. (2) Next.js standalone mode doesn't serve `_next/static/` — CSS returned 404. Multiple "fix" iterations were wasted because the code was never actually deployed.
+**Lesson:**
+1. After EVERY deploy, verify the change is live: `ssh server "grep 'unique_string' .next/..."` or curl a known changed endpoint
+2. Check for OOM: `next build` on a 1GB VPS can get killed — watch for `Killed` in output
+3. Next.js `output: 'standalone'` does NOT serve static files — either use nginx for `_next/static/` or switch PM2 to `next start`
+4. If deploy script says success but changes aren't visible, the build is stale — don't keep pushing more commits on top
+5. Two concurrent build processes on a small VPS will OOM — never deploy frontend from two terminals simultaneously
+
+## Flex Layout Needs Complete Parent Chain — flex:1 Inside Scroll Container Does Nothing
+
+**Source:** Mini App dialer numpad positioning (2026-03-24)
+**What happened:** Spent 5+ iterations trying to push the numpad to the bottom using `flex: 1` + `justify-content: flex-end`. It never worked because `.miniapp-content` (the parent) has `overflow-y: auto` and is NOT a flex container. `flex: 1` on a child of a non-flex parent is ignored.
+**Lesson:**
+1. `flex: 1` only works if the PARENT has `display: flex`
+2. Scroll containers (`overflow: auto`) are not flex containers unless explicitly set
+3. For fixed-bottom layouts inside scroll containers, use `min-height: calc(100dvh - known_offsets)` instead of relying on flex
+4. Always trace the DOM parent chain to verify flex layout propagates correctly
+5. Test on device, not just in theory — what looks correct in CSS logic may not render as expected
+
+## Telegram WebView Haptic Feedback Blocks Main Thread
+
+**Source:** Mini App dialer spam/lag fix (2026-03-24)
+**What happened:** Users couldn't press numpad keys rapidly (5+ per second) — input froze. Tried: rAF batching, React.memo, event delegation. None worked. Root cause: `webApp.HapticFeedback.selectionChanged()` is a synchronous Telegram SDK call that blocks the JS main thread for ~50-100ms each time.
+**Lesson:**
+1. Telegram SDK haptic calls are synchronous and expensive — never call on every keypress
+2. Either throttle to max 1 per 100ms, or disable entirely for rapid-fire interactions
+3. Use `onPointerDown` instead of `onClick` in Telegram WebView — `onClick` has ~300ms delay for double-tap detection
+4. CSS transitions on rapidly-pressed elements compound — remove `transition` for instant feedback
+5. Event delegation (single handler on parent) is better than 12 individual button handlers for rapid interaction
+
+## Operator Dropdown Cycles Through Items — Use Proper Selection UI
+
+**Source:** Mini App dialer operator selector (2026-03-24)
+**What happened:** First attempt at operator selection: tiny chevron button that cycled through operators one by one on each tap. User hated it — couldn't see options, couldn't pick directly. Then tried a bottom sheet (slides up from bottom) — user wanted dropdown that goes DOWN from the label.
+**Lesson:**
+1. Never use "cycle through" for selection — always show all options
+2. Selection UI should match the context: dropdown for inline selection, bottom sheet for full-screen actions
+3. Make the entire label row tappable (not just a tiny icon) — but don't add invisible padding that causes accidental taps
+4. "Dropdown goes down, sheet goes up" — match user's spatial expectation
+
+## Phone Display Logic: Inbound Shows Caller, Outbound Shows Callee
+
+**Source:** Mini App call history showing wrong numbers (2026-03-24)
+**What happened:** History page showed `phone_2 || phone_1` for all calls. For inbound missed calls, this showed the operator's SIP extension instead of the external caller's number. Dashboard missed calls count was 0 because query filtered by `operator_id == user.id` — missed calls often have no assigned operator.
+**Lesson:**
+1. Inbound calls: display `phone_1` (the caller/external party)
+2. Outbound calls: display `phone_2` (the callee/external party)
+3. Never use a single fallback (`phone_2 || phone_1`) — always check direction first
+4. Missed/unanswered calls may not have `operator_id` — don't filter by it for missed call queries
+5. Contact matching for inbound calls should join on `phone_1`, not `phone_2`
+
+## i18n Keys Must Exist Before Referencing Them
+
+**Source:** Mini App dialer SIP/External toggle (2026-03-24)
+**What happened:** Added `t('calls.sipMode')` and `t('calls.externalMode')` in JSX but forgot to add the actual keys to the message JSON files. The deployed app showed raw key paths like `miniapp.calls.sipMode` instead of translated text.
+**Lesson:**
+1. When adding `t('new.key')` calls, ALWAYS add the key to ALL locale files (en/ru/uz) in the same commit
+2. `next build` does NOT fail on missing i18n keys — they silently render as raw key paths
+3. After adding i18n keys, verify by searching the JSON files: `grep 'newKey' messages/*.json`
+
+## Telegram SDK startapp Param Is Immutable — Handle Deep Links Once
+
+**Source:** Deep link redirect loop (2026-03-24)
+**What happened:** `webApp.initDataUnsafe.start_param` is set once by Telegram when the Mini App opens and NEVER changes during the session. The layout's `authenticate()` callback re-read `startappData` on every navigation, causing an infinite redirect loop back to the deep link page. User was "locked" on the page they deep-linked to.
+**Lesson:**
+1. `start_param` is immutable — treat it as a one-time initialization value, not a reactive state
+2. Use a `useRef` flag to track whether the deep link has been handled
+3. Only redirect on the FIRST authentication, never on subsequent re-renders
+4. Any value derived from Telegram SDK's `initDataUnsafe` should be consumed once, not re-read

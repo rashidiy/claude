@@ -6,82 +6,45 @@ Persistent task state. Survives session crashes. Update on every status change.
 
 ## Active Tasks
 
-| ID | Task | Status | Repo | Blocked By | Notes |
-|---|---|---|---|---|---|
-| T86 | Invitation code not copyable in Telegram — needs monospace/code formatting like OTP | todo | Backend | none | Bot message formatting |
-| T87 | Currency cleanup — remove Euro, keep UZS (primary) + USD, proper number formatting | todo | Both | none | |
-| T88 | Lead status changes — can't change status in card view, only table view | todo | Frontend | none | CRM web app |
-| T89 | Pipeline drag — inconsistent options between card and table views | todo | Frontend | none | CRM web app |
+No active tasks. All Telegram audit items completed.
 
 ## Completed (Last 15)
 
 | ID | Task | Completed | Branch |
-| T84 | Mini App complete rewrite — 4 tabs, pipeline page, MainButton actions, note input, create contact, DM prefs, deep linking, manager team view, contact names on calls, inline query handler, DM notification buttons, quiet hours | 2026-03-23 | dev (direct) |
-| T83 | Mini App complete redesign — Telegram-native theming, i18n, detail pages, skeletons, filter chips, date grouping, profile with language selector | 2026-03-22 | dev (direct) |
+| T87 | Currency cleanup — remove EUR, UZS default + formatting | 2026-03-24 | dev (direct) |
+| T88 | Lead status change works in card view | 2026-03-24 | dev (direct) |
+| T89 | Consistent actions between card and table views | 2026-03-24 | dev (direct) |
+| T90 | Mini App contact create page with phone prefill | 2026-03-24 | dev (direct) |
+| T91 | Mini App lead create form on pipeline page | 2026-03-24 | dev (direct) |
+| T94 | Call recording as sendAudio in Telegram | 2026-03-24 | dev (direct) |
+| T95 | Escalation message templates i18n (3 tiers, ru/en/uz) | 2026-03-24 | dev (direct) |
+| T99 | Quiet hours timezone support (offset, default +5) | 2026-03-24 | dev (direct) |
+| T100 | DM deep links use signed startapp format | 2026-03-24 | dev (direct) |
+| T104 | Quiet hours time picker UI | 2026-03-24 | dev (direct) |
+| T105 | Company picker roles translated | 2026-03-24 | dev (direct) |
+| T106 | Dialer max phone length (15 digits) | 2026-03-24 | dev (direct) |
+| T107 | React error boundary for Mini App | 2026-03-24 | dev (direct) |
+| T108 | Recording processing note when URL not yet available | 2026-03-24 | dev (direct) |
+| T109 | Daily digest topic routing fallback | 2026-03-24 | dev (direct) |
+
+## Previously Completed
+
+| ID | Task | Completed | Branch |
+| T110 | Mark Handled in DM — skip group message edit | 2026-03-24 | dev (direct) |
+| T111 | /search MarkdownV2 escaping | 2026-03-24 | dev (direct) |
+| T86 | Invite code monospace formatting | 2026-03-24 | dev (direct) |
+| T92 | Deal detail startapp deep link fix | 2026-03-24 | dev (direct) |
+| T93 | Lead detail startapp deep link fix | 2026-03-24 | dev (direct) |
+| T96 | Remove dead cb: callback, replace with Mini App startapp URL | 2026-03-24 | dev (direct) |
+| T97 | DM notification button labels i18n | 2026-03-24 | dev (direct) |
+| T98 | Missed call DM broadcast fix (operator_id=None) | 2026-03-24 | dev (direct) |
+| T101 | Bot webhook handlers — 17 hardcoded English strings → i18n | 2026-03-24 | dev (direct) |
+| T102 | Mini App auth error — hide debug info from users | 2026-03-24 | dev (direct) |
+| T103 | User invite message i18n (was hardcoded Russian) | 2026-03-24 | dev (direct) |
+| T84 | Mini App complete rewrite | 2026-03-23 | dev (direct) |
+| T83 | Mini App complete redesign | 2026-03-22 | dev (direct) |
 | T82 | Telegram improvements — notifications, Mini App, DM, bot polish | 2026-03-22 | feature/telegram-improvements → dev |
-| T81 | Sipuni one-click setup — contract + backend (client, model, migration, router) + frontend (types, api, page, i18n) | 2026-03-21 | dev (direct) |
-| T79 | QA audit fix — backend: test isolation, PII masking, SSRF hardening, race condition fix, operator enumeration, UUID validation, webhook secrets, bulk contact dedup, stale tests cleanup | 2026-03-18 | dev (direct) |
-| T80 | QA audit fix — frontend: remove sample analytics data, 59 console.error calls, toast consistency, i18n fixes, type safety, duplicate constants | 2026-03-18 | dev (direct) |
-|---|---|---|---|
-| T77 | QA audit fix — backend: cross-tenant leaks, unbounded queries, defense-in-depth filters | 2026-03-17 | fix/qa-audit-findings → dev |
-| T78 | QA audit fix — frontend: i18n constants, ProtectedRoute, outcome options | 2026-03-17 | fix/qa-audit-findings → dev |
-| T75 | Production hardening — backend | 2026-03-17 | dev (direct, 8 commits) |
-| T76 | Production hardening — frontend | 2026-03-17 | dev (direct, 7 commits) |
-| T60-T74 | Telegram Bot V2 | 2026-03-15 | feature/telegram-bot-v2 |
-| T53 | Landing page — dark theme, Magic UI, Unbounded font | 2026-03-15 | feat/landing-page |
-| T52 | Webhooks settings page | 2026-03-15 | feat/api-keys-page |
-| T51 | API Keys settings page | 2026-03-15 | feat/api-keys-page |
-| T50 | Custom Fields settings page | 2026-03-15 | feat/api-keys-page |
-
----
-
-## T82 Details (completed 2026-03-22)
-
-Massive Telegram session — 15+ commits across both repos:
-
-**Notifications:**
-- Compact scannable format (not data dumps)
-- Emoji on all buttons
-- 3 topics instead of 5 (merged Missed into Calls)
-- "Create Contact" button for unknown callers
-- Phone numbers as tappable tel: links
-- Bot reactions (✅ handled, 👤 lead assigned)
-- Improved daily digest
-
-**Bot:**
-- /help command i18n (ru/en/uz) with Mini App button (DM only)
-- /start i18n based on group config language
-- /today fixed parse_mode (was showing raw MarkdownV2)
-- Bot description + short description in 3 languages
-- Localized command descriptions (ru/en/uz)
-- Mini App menu button (📋 CRM)
-- OTP message i18n with tap-to-copy monospace
-
-**Mini App:**
-- 6 screens: dashboard, contacts, leads, deals, calls, profile
-- Bottom tab bar (icons only)
-- Company picker (for users in multiple companies)
-- Auth via Telegram initData HMAC → JWT
-- CSP fix to allow Telegram SDK
-- Middleware fix to allow /miniapp on bare domain
-
-**DM Notifications:**
-- Wired _send_dm_notifications (was dead code)
-- Scoped to assignee (not broadcast)
-- Triggered on: call completed, call missed, new lead, deal stage change
-
-**QA:**
-- UUID validation on all callback actions
-- Phone pattern validation on create contact
-- tel: URL sanitization
-- Proper API types (no any)
-- Error states on all pages
-- is_suspended filter on /companies endpoint
-
-**Infrastructure:**
-- FRONTEND_URL added to docker-compose.yml
-- Settings renamed "Telegram Bot" → "Telegram Group"
-- Sipuni contract webhook URL fixed
+| T81 | Sipuni one-click setup | 2026-03-21 | dev (direct) |
 
 ---
 

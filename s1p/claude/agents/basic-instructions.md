@@ -24,8 +24,29 @@ Read this before starting any work.
 
 - Feature branches from `dev`. PRs target `dev`. Never push directly to `main`.
 - No `Co-Authored-By` lines. No AI/Claude attribution in commits.
-- Work in **git worktrees** (isolated copy of the repo). Never edit the main working directory.
 - Commit early and often on feature branches. WIP commits are fine — they survive crashes.
+
+### Worktree Isolation (CRITICAL)
+
+The application repos (`repos/s1p-backend`, `repos/s1p-frontend`) are **separate git repos inside a git-ignored directory**. The parent claude repo's worktree does NOT copy them. You MUST create worktrees inside the sub-repo itself:
+
+```bash
+# 1. Create worktree from the sub-repo
+cd /home/rashidiy/claude/s1p/repos/s1p-frontend
+git worktree add /tmp/agent-YOUR_TASK_ID dev
+
+# 2. Work entirely in the worktree — NEVER cd back to the original repo
+cd /tmp/agent-YOUR_TASK_ID
+git checkout -b fix/your-branch-name
+
+# 3. Do all your work here, commit here
+
+# 4. When done, the dev lead merges your branch in the main directory
+# 5. Clean up
+git worktree remove /tmp/agent-YOUR_TASK_ID
+```
+
+**NEVER** run `git checkout` in the main repo directory (`repos/s1p-frontend` or `repos/s1p-backend`). The user works there. Checking out your branch there will overwrite their work.
 
 ## Pre-Flight (Before Writing Any Code)
 
