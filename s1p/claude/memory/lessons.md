@@ -255,3 +255,23 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 2. Use a `useRef` flag to track whether the deep link has been handled
 3. Only redirect on the FIRST authentication, never on subsequent re-renders
 4. Any value derived from Telegram SDK's `initDataUnsafe` should be consumed once, not re-read
+
+## Sipuni Recording Downloads Are Throttled From Datacenter IPs
+
+**Source:** Recording playback broken in CRM (2026-03-24)
+**What happened:** `asyncio.TimeoutError` on every recording fetch. Sipuni returns HTTP 200 but trickles data at ~1KB/s from our server IP. HEAD request returns instantly with correct Content-Length, but GET hangs. Through residential proxy: 31KB in 0.6s.
+**Lesson:**
+1. Always use `RESIDENTIAL_PROXY_URL` for Sipuni recording downloads
+2. Don't use the shared HTTP client pool — create a fresh aiohttp session with proxy param
+3. If recordings break again, first check if the proxy is down before debugging code
+
+## Sipuni Webhook Timestamps Are Unreliable for External Calls
+
+**Source:** Live webhook testing (2026-03-24) — see `claude/agents/researcher/studies/sipuni-webhook-events/`
+**What happened:** For `/external` calls, `call_answer_timestamp` equals `call_start_timestamp` on NOANSWER, and is BEFORE `call_start_timestamp` on ANSWER. For `/number` calls, timestamps are correct.
+**Lesson:**
+1. Only compute duration when `state == 'ANSWER'`
+2. For external calls, use Event 3 `timestamp` as the real answer time, not `call_answer_timestamp` from Event 2
+3. Validate `call_answer > call_start` before trusting the value
+4. `billing_sec` is NEVER sent by Sipuni — always compute from timestamps
+5. Full findings: `claude/agents/researcher/studies/sipuni-webhook-events/findings.md`
