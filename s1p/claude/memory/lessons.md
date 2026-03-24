@@ -104,6 +104,19 @@ For agent-specific lessons, see `claude/agents/[role]/lessons.md`.
 **What happened:** Middleware redirected all non-landing routes on bare domain (`s1p.uz`) to `/`. Mini App at `/miniapp` was redirected to the landing page.
 **Lesson:** When adding new public routes that should work on the bare domain, add them to the middleware whitelist alongside `/login`, `/register`, etc.
 
+## Mini App ≠ Mini CRM — Design for 10-Second Sessions
+
+**Source:** Mini App rewrite (2026-03-23)
+**What happened:** First mini app version was a read-only data browser (contacts list, leads list, deals list, calls list — separate tabs). Users had no reason to come back because they couldn't DO anything.
+**Lesson:** Telegram Mini Apps need to be action-oriented:
+1. Show what needs attention (missed calls, new leads) — not dashboards with numbers
+2. Let users act (change lead status, add notes, call back, create contacts) — not just view
+3. DM notifications must deep-link to mini app pages with action buttons — not dead-end text
+4. Use Telegram SDK features (MainButton, showPopup, haptics) — not custom web UI
+5. Role-based views (operator vs manager) — not one-size-fits-all
+6. Combined views (Pipeline = leads + deals toggle) — not separate tabs for related data
+7. 4 tabs max — not 6. Profile goes behind avatar tap.
+
 ## Soft Delete Needs Full-Stack Thinking
 
 **Source:** Pre-prod audit (2026-03-08)

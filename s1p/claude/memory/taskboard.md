@@ -8,11 +8,16 @@ Persistent task state. Survives session crashes. Update on every status change.
 
 | ID | Task | Status | Repo | Blocked By | Notes |
 |---|---|---|---|---|---|
-| T83 | Mini App polish — dark theme sync, styling, i18n, detail screens | todo | frontend | none | Foundation working, needs UI refinement |
+| T86 | Invitation code not copyable in Telegram — needs monospace/code formatting like OTP | todo | Backend | none | Bot message formatting |
+| T87 | Currency cleanup — remove Euro, keep UZS (primary) + USD, proper number formatting | todo | Both | none | |
+| T88 | Lead status changes — can't change status in card view, only table view | todo | Frontend | none | CRM web app |
+| T89 | Pipeline drag — inconsistent options between card and table views | todo | Frontend | none | CRM web app |
 
 ## Completed (Last 15)
 
 | ID | Task | Completed | Branch |
+| T84 | Mini App complete rewrite — 4 tabs, pipeline page, MainButton actions, note input, create contact, DM prefs, deep linking, manager team view, contact names on calls, inline query handler, DM notification buttons, quiet hours | 2026-03-23 | dev (direct) |
+| T83 | Mini App complete redesign — Telegram-native theming, i18n, detail pages, skeletons, filter chips, date grouping, profile with language selector | 2026-03-22 | dev (direct) |
 | T82 | Telegram improvements — notifications, Mini App, DM, bot polish | 2026-03-22 | feature/telegram-improvements → dev |
 | T81 | Sipuni one-click setup — contract + backend (client, model, migration, router) + frontend (types, api, page, i18n) | 2026-03-21 | dev (direct) |
 | T79 | QA audit fix — backend: test isolation, PII masking, SSRF hardening, race condition fix, operator enumeration, UUID validation, webhook secrets, bulk contact dedup, stale tests cleanup | 2026-03-18 | dev (direct) |
